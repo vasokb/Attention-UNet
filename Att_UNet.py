@@ -1,6 +1,5 @@
 from torch import nn
 import torch
-from architectures.common import MeanLayer
 
 
 class conv_block(nn.Module):
@@ -77,13 +76,6 @@ class Att_UNet(nn.Module):
         self.feat = par.feature_maps
         self.n_inputs = n_inputs
 
-        self.pre_subsampling_block = []
-        if par.das_mode:
-            self.pre_subsampling_block.append(MeanLayer(dim=1))
-            self.n_inputs = 1
-
-        self.pre_subsampling_block = nn.Sequential(*self.pre_subsampling_block)
-
         self.Maxpool = nn.MaxPool2d(2)
 
         self.Conv1 = conv_block(self.n_inputs, self.feat)
@@ -108,7 +100,6 @@ class Att_UNet(nn.Module):
 
 
     def forward(self, x):
-        x = self.pre_subsampling_block(x)
         # encoding path
         x1 = self.Conv1(x)
 
